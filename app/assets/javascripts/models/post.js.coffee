@@ -1,3 +1,3 @@
 class @Post
-  constructor: (name) ->
-    @name = name
+  constructor: (item) ->
+    @name = item.name

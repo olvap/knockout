@@ -3,24 +3,29 @@ class @PostListViewModel
     # Data
     self = this
     @posts = ko.observableArray([])
-    @newPostText = ko.observable()
+    @newPostTitle = ko.observable()
+    @newPostBody  = ko.observable()
+    @chosenPostData = ko.observable()
 
-
-    self.addPost = ->
-      post = new Post(name: @newPostText())
+    @addPost = ->
+      post = new Post(name: @newPostTitle(), body: @newPostBody())
       self.save(post)
 
-    self.removePost = (post) ->
+    @removePost = (post) ->
       self.posts.destroy post
 
-    self.save = (post)->
+    @showPost = (post) ->
+      $.get "/posts/#{post.id}.json", post, self.chosenPostData
+
+    @save = (post)->
       $.ajax "/posts.json",
         data: ko.toJSON(post: post)
         type: "post"
         contentType: "application/json"
         success: (result) ->
-          self.posts.push post
-          self.newPostText ""
+          self.posts.push result
+          self.newPostTitle ""
+          self.newPostBody ""
 
     # Load initial state from server, convert it to Post instances, then populate self.posts
     $.getJSON "/posts.json", (allData) ->

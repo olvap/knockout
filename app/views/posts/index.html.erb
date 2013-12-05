@@ -10,8 +10,9 @@
     </tr>
   </thead>
   <tbody data-bind = "foreach: posts">
-      <tr data-bind="click: $root.showPost">
-        <td data-bind="text: name"></td>
+      <tr>
+        <td data-bind="text: name, click: $root.showPost"></td>
+        <td data-bind="click: $root.editPost">Edit</td>
       </tr>
   </tbody>
 
@@ -27,6 +28,13 @@
     Title: <input data-bind="value: newPostTitle" placeholder="Create a posts" />
     Body:  <input data-bind="value: newPostBody" />
     <button type="submit">Add</button>
+</form>
+
+<form data-bind="submit: update, with: chosenPostToEdit">
+    <input data-bind="value: id" />
+    Title: <input data-bind="value: name" />
+    Body:  <input data-bind="value: body" />
+    <button type="submit">Edit</button>
 </form>
 
 <div class="viewPost" data-bind="with: chosenPostData">

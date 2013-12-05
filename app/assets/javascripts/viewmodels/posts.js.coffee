@@ -3,21 +3,41 @@ class @PostListViewModel
     # Data
     self = this
     @posts = ko.observableArray([])
+
     @newPostTitle = ko.observable()
     @newPostBody  = ko.observable()
     @chosenPostData = ko.observable()
+    @chosenPostToEdit = ko.observable()
+
+    @editPostId = ko.observable()
+    @editPostTitle  = ko.observable()
+    @editPostBody  = ko.observable()
 
     @addPost = ->
       post = new Post(name: @newPostTitle(), body: @newPostBody())
-      self.save(post)
+      self.create(post)
+
+    @editPost = (post)->
+      $.get "/posts/#{post.id}.json", {}, self.chosenPostToEdit
 
     @removePost = (post) ->
       self.posts.destroy post
 
     @showPost = (post) ->
-      $.get "/posts/#{post.id}.json", post, self.chosenPostData
+      $.get "/posts/#{post.id}.json", {}, self.chosenPostData
 
-    @save = (post)->
+    @update = ->
+      console.log @chosenPostToEdit
+      $.ajax "/posts/1.json",
+        data: ko.toJSON()
+        type: "put"
+        contentType: "application/json"
+        success: (result) ->
+          self.posts.push result
+          self.newPostTitle ""
+          self.newPostBody ""
+
+    @create = (post)->
       $.ajax "/posts.json",
         data: ko.toJSON(post: post)
         type: "post"
